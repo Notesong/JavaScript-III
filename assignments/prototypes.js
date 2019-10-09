@@ -21,7 +21,7 @@ function GameObject(attr) {
   this.dimensions = attr.dimensions;
 }
 GameObject.prototype.destroy = function() {
-  return `${this.name} was removed from the game.`;
+  return `${this.name} is removed from the game.`;
 };
 
 /*
@@ -34,10 +34,22 @@ function CharacterStats(characterAttr) {
   GameObject.call(this, characterAttr);
   this.healthPoints = characterAttr.healthPoints;
 }
-CharacterStats.prototype = Object.create(GameObject.prototype);CharacterStats.prototype.takeDamage = function() {
-    return `${this.name} took damage.`;
+CharacterStats.prototype = Object.create(GameObject.prototype);
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} takes damage.`;
 };
-
+// calculate battle damage for the stretch goal
+CharacterStats.prototype.damageResult = function() {
+  // take 0-9 hps damage
+  let damage = Math.floor(Math.random() * 10);
+  this.healthPoints -= damage;
+  if (this.healthPoints < 1) {
+    return `${this.name} takes ${damage} damage and dies. ` + this.destroy();
+  } else {
+    return `${this.name} takes ${damage} damage. ${this.healthPoints} health remain.`;
+  }
+  
+};
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -53,9 +65,19 @@ function Humanoid(humanoidAttr) {
   this.team = humanoidAttr.team;
   this.weapons = humanoidAttr.weapons;
   this.language = humanoidAttr.language;
+  // stretch goal attributes
+  this.prefix = humanoidAttr.prefix;
+  this.lastName = humanoidAttr.lastName;
 }
-Humanoid.prototype = Object.create(CharacterStats.prototype);Humanoid.prototype.greet = function() {
-  return `${this.name} offers a greeting in ${this.language}.`;
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+Humanoid.prototype.greet = function() {
+  // check if lastName has been defined and give the proper greeting
+  if(this.lastName === undefined) {
+    return `${this.name} offers a greeting in ${this.language}.`;
+  } else {
+    return `${this.name} ${this.lastName} offers a greeting in ${this.language}.`;
+  }
+  
 }
 
 
@@ -128,24 +150,85 @@ Humanoid.prototype = Object.create(CharacterStats.prototype);Humanoid.prototype.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 
-  // Stretch task: 
-  // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
-  // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
-  // * Create two new objects, one a villain and one a hero and fight it out with methods!
+// Stretch task: 
+// * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
+// * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+// * Create two new objects, one a villain and one a hero and fight it out with methods!
 
-  function Hero(heroAttr) {
-    Humanoid.call(this, heroAttr);
-    this.team = heroAttr.team;
-  }
-  Hero.prototype = Object.create(hHmanoid.prototype);
-  Hero.prototype.greet = function() {
-    return `${this.name} offers a greeting in ${this.language}.`;
-  }
 
-  function Villain(villianAttr) {
-    Humanoid.call(this, villianAttr);
-    this.team = villianAttr.team;
-  }
-  Villain.prototype = Object.create(Humanoid.prototype);Villain.prototype.greet = function() {
-    return `${this.name} offers a greeting in ${this.language}.`;
-  }
+// Hero constructor and prototypes
+function Hero(heroAttr) {
+  Humanoid.call(this, heroAttr);
+}
+Hero.prototype = Object.create(Humanoid.prototype);
+Hero.prototype.attack = function() {
+  return `${this.name} draws blood with ${this.weapons}.`;
+}
+Hero.prototype.glare = function() {
+  return `${this.name} glares.`;
+}
+
+// Villian constructor and prototype
+function Villian(villianAttr) {
+  Humanoid.call(this, villianAttr);
+}
+Villian.prototype = Object.create(Humanoid.prototype);
+Villian.prototype.attack = function() {
+  return `${this.name} brings death with ${this.weapons}.`;
+}
+
+const hero = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 3,
+    width: 3,
+    height: 3,
+  },
+  healthPoints: 25,
+  name: 'Sephiroth',
+  prefix: 'General',
+  team: 'Loveless',
+  weapons: [
+    'Masamune',
+  ],
+  language: 'Common Tongue',
+});
+
+const villian = new Villian({
+  createdAt: new Date(),
+  dimensions: {
+    length: 3,
+    width: 3,
+    height: 3,
+  },
+  healthPoints: 25,
+  name: 'Vincent',
+  lastName: 'Valentine',
+  team: 'Seventh Heaven',
+  weapons: [
+    'Chaos',
+  ],
+  language: 'Cetra',
+});
+
+function battle() {
+  // loop until either the hero or villian dies
+  do {
+    if(hero.healthPoints > 0) {
+      console.log(hero.attack());
+      console.log(villian.damageResult());
+    }  
+    if(villian.healthPoints > 0) {
+      console.log(villian.attack());
+      console.log(hero.damageResult());
+    }
+  } while (hero.healthPoints > 0 && villian.healthPoints > 0);
+}
+
+// battle intro
+console.log(`..........The Showdown..........`)
+console.log(`Hero ${hero.prefix} ${hero.name}: ${hero.healthPoints} hps | Villian ${villian.name} ${villian.lastName}: ${villian.healthPoints} hps`);
+console.log(villian.greet());
+console.log(`${hero.prefix} ` + hero.glare());
+// the battle itself
+battle();
