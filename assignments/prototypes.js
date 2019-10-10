@@ -23,6 +23,20 @@ function GameObject(attr) {
 GameObject.prototype.destroy = function() {
   return `${this.name} is removed from the game.`;
 };
+// battle function for stretch goal
+GameObject.prototype.battle = function() {
+  // loop until either the hero or villian dies
+  do {
+    if(hero.healthPoints > 0) {
+      console.log(hero.attack());
+      console.log(villian.damageResult());
+    }  
+    if(villian.healthPoints > 0) {
+      console.log(villian.attack());
+      console.log(hero.damageResult());
+    }
+  } while (hero.healthPoints > 0 && villian.healthPoints > 0);
+}
 
 /*
   === CharacterStats ===
@@ -211,19 +225,8 @@ const villian = new Villian({
   language: 'Cetra',
 });
 
-function battle() {
-  // loop until either the hero or villian dies
-  do {
-    if(hero.healthPoints > 0) {
-      console.log(hero.attack());
-      console.log(villian.damageResult());
-    }  
-    if(villian.healthPoints > 0) {
-      console.log(villian.attack());
-      console.log(hero.damageResult());
-    }
-  } while (hero.healthPoints > 0 && villian.healthPoints > 0);
-}
+// create basic game object for battles
+const mainGameObject = new GameObject({});
 
 // battle intro
 console.log(`..........The Showdown..........`)
@@ -231,4 +234,4 @@ console.log(`Hero ${hero.prefix} ${hero.name}: ${hero.healthPoints} hps | Villia
 console.log(villian.greet());
 console.log(`${hero.prefix} ` + hero.glare());
 // the battle itself
-battle();
+mainGameObject.battle();
