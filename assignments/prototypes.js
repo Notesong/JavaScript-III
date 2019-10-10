@@ -37,7 +37,11 @@ GameObject.prototype.battle = function (combatant1, combatant2) {
       console.log(combatant1.damageResult(combatant2));
     }
   } while (combatant1.healthPoints > 0 && combatant2.healthPoints > 0);
-}
+};
+// basic attack for anyone without a specialized attack
+GameObject.prototype.attack = function () {
+  return `${this.name} attacks with ${this.weapons.join(" and ")}.`;
+};
 
 /*
   === CharacterStats ===
@@ -66,7 +70,6 @@ CharacterStats.prototype.damageResult = function (enemy) {
   } else {
     return `${this.name} takes ${damage} damage. ${this.healthPoints} health remain.`;
   }
-
 };
 
 /*
@@ -95,8 +98,7 @@ Humanoid.prototype.greet = function () {
   } else {
     return `${this.name} ${this.lastName} offers a greeting in ${this.language}.`;
   }
-
-}
+};
 
 
 /*
@@ -184,10 +186,10 @@ function Hero(heroAttr) {
 Hero.prototype = Object.create(Humanoid.prototype);
 Hero.prototype.attack = function () {
   return `${this.name} draws blood with ${this.weapons}.`;
-}
+};
 Hero.prototype.glare = function () {
   return `${this.name} glares.`;
-}
+};
 
 // Villian constructor and prototype
 function Villian(villianAttr) {
@@ -196,7 +198,7 @@ function Villian(villianAttr) {
 Villian.prototype = Object.create(Humanoid.prototype);
 Villian.prototype.attack = function () {
   return `${this.name} brings death with ${this.weapons}.`;
-}
+};
 
 const hero = new Hero({
   createdAt: new Date(),
@@ -238,9 +240,12 @@ const villian = new Villian({
 const mainGameObject = new GameObject({});
 
 // battle intro
-console.log(`..........The Showdown..........`)
-console.log(`Hero ${hero.prefix} ${hero.name}: ${hero.healthPoints} hps | Villian ${villian.name} ${villian.lastName}: ${villian.healthPoints} hps`);
+console.log(`\n..........The Showdown..........\n`)
+console.log(`Hero ${hero.prefix} ${hero.name}: ${hero.healthPoints} hps | Villian ${villian.name} ${villian.lastName}: ${villian.healthPoints} hps\n`);
 console.log(villian.greet());
-console.log(`${hero.prefix} ` + hero.glare());
+console.log(`\n${hero.prefix} ` + hero.glare() + `\n`);
 // the battle itself
 mainGameObject.battle(hero, villian);
+// example secondary battle to demonstate battle()
+console.log(`\n..........Another Battle Example..........\n`);
+mainGameObject.battle(mage, swordsman);
