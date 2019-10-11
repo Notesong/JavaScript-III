@@ -191,12 +191,12 @@ Hero.prototype.glare = function () {
   return `${this.name} glares.`;
 };
 
-// villain constructor and prototype
-function villain(villainAttr) {
+// Villain constructor and prototype
+function Villain(villainAttr) {
   Humanoid.call(this, villainAttr);
 }
-villain.prototype = Object.create(Humanoid.prototype);
-villain.prototype.attack = function () {
+Villain.prototype = Object.create(Humanoid.prototype);
+Villain.prototype.attack = function () {
   return `${this.name} brings death with ${this.weapons}.`;
 };
 
@@ -218,7 +218,7 @@ const hero = new Hero({
   language: 'Common Tongue',
 });
 
-const villain = new villain({
+const villain = new Villain({
   createdAt: new Date(),
   dimensions: {
       length: 3,
